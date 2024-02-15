@@ -1,42 +1,21 @@
 #!/bin/bash
 
+#created by: gomgom silalahi
+#dated: 20230128
 
-#source_file=/data/backup-db/ebas/2023/Okt/EBAS_BACKUP_FULL_2023_10_01.sql
-#dest=/data/backup-db/~archived/2023/202310/ebas
+  #path folder log
+  #jika ada tambahan untuk log yang mau dihapus tinggal input path file log nya berada
 
-source = /data/backup-db/ebas/
-dest = /data/backup-db/~archived/$(date +%Y)/$(date +%Y%m)
+folders=("/data/api-biometric/logs"
+         "/data/api-briva/logs"
+         "/data/api-edits/app/api-edits/application/logs")
 
-#check folder dest sudah terbentuk atau blm 
+  #command find dan hapus file yang lebih dari 8 hari (default 8 hari)
 
-if [ -d /data/backup-db/~archived/$(date +%Y)]
-    then cd /$(date +%Y)
-    else
-        exit && echo "folder tahun belum terbentuk" >> /data/backup-db/ebas/log/log_cp_archived_ebas_$(date +%d-%m-%Y).log
-fi 
-    if [ -d /data/backup-db/~archived$(date +%Y)/$(date +%Y%m)]
-        then 
-            cd /$(date +%Y%m)
-        else
-        exit  && echo "folder tahun&bulan belum terbentuk" >> /data/backup-db/ebas/log/log_cp_archived_ebas_$(date +%d-%m-%Y).log
-    fi
-        if [ -d /data/backup-db/~archived$(date +%Y)/$(date +%Y%m)/ebas]
-        then 
-            mkdir ebas 
-            cd ebas 
-            array = ()
-            while IFS = read -r -d $'\0\';
-                do 
-                    array+=("$REPLY")
-            done << (find /data/backup-db/ebas/$(date +%Y)/ -type f -name "*01.sql")
-
-echo pwd
-
-
-
-
-
-
-
-
-
+for folder in "${folders[@]}";
+  do
+ for file in "$folder"/*;
+   do
+     find $file -type f -mtime +8 -exec rm -rf {} \; && echo "file berhasil di hapus-$(date +%d-%m-%Y)" >> /data/source/script/log_retensi.log
+ done
+done
